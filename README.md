@@ -12,6 +12,7 @@ A Sudoku game engine with two interchangeable frontends — a terminal UI and a 
 ## Screenshots
 
 <!-- Add screenshots or a short GIF of the Qt UI and terminal UI here -->
+<img width="759" height="668" alt="Screenshot from 2026-09-03 23-28-55" src="https://github.com/user-attachments/assets/83eef58e-1aa2-4125-b8ad-1667021a2309" />
 
 ## Getting started
 
