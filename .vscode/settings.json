@@ -1,0 +1,23 @@
+{
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "C_Cpp.clang_format_fallbackStyle": "LLVM",
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, BreakBeforeBraces: Attach, IndentWidth: 4, TabWidth: 4, ColumnLimit: 100 }",
+    "C_Cpp.errorSquiggles": "enabled",
+    "files.associations": {
+        "iostream": "cpp",
+        "string": "cpp",
+        "*.moc": "cpp",
+        "QApplication": "cpp",
+        "QWidget": "cpp",
+        "QMainWindow": "cpp",
+        "QGridLayout": "cpp",
+        "QPushButton": "cpp",
+        "QLabel": "cpp",
+        "QLineEdit": "cpp",
+        "QMessageBox": "cpp",
+        "QTimer": "cpp",
+        "QString": "cpp"
+    }
+}
