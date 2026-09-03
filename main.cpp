@@ -13,7 +13,7 @@
 #include "core/SudokuGenerator.hpp"
 using namespace sudoku;
 
-constexpr std::string puzzleFileName = "test.txt";
+constexpr std::string_view puzzleFileName = "InitialPuzzle.txt";
 
 int main(int argc, char *argv[]) {
 #ifdef QT_UI

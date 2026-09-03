@@ -192,10 +192,11 @@ void MainWindow::setupCentralWidget() {
     };
 
     // Use the lambda to create the four legend entries
-    addLegendRow("#ffffff", "#000000", true, "Given (read-only)");
-    addLegendRow("#ffffff", "#1a5ca8", false, "Player entry");
-    addLegendRow("#dce9fc", "#000000", false, "Highlighted (same row / col / box)");
-    addLegendRow("#316ac5", "#ffffff", false, "Selected cell");
+    addLegendRow(kDefaultBg.name(), kGivenText.name(), true, "Given (read-only)");
+    addLegendRow(kDefaultBg.name(), kPlayerText.name(), false, "Player entry");
+    addLegendRow(kHighlightedBg.name(), kGivenText.name(), false,
+                 "Highlighted (same row / col / box)");
+    addLegendRow(kSelectedBg.name(), kDefaultBg.name(), false, "Selected cell");
 
     rightLayout->addWidget(legendGroup);
 

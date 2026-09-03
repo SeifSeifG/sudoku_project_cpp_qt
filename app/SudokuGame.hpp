@@ -96,7 +96,7 @@ class SudokuGame {
      *       onPuzzleLoaded(reason) alone, and any game already in progress is left
      *       untouched, because the board validates the whole grid before it mutates.
      */
-    PuzzleLoadStatus loadPuzzle(const std::string &puzzleFileName);
+    PuzzleLoadStatus loadPuzzle(std::string_view puzzleFileName);
 
     /**
      * @brief Saves the current puzzle state to a file.

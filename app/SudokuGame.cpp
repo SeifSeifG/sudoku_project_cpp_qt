@@ -9,7 +9,7 @@ void SudokuGame::setObserver(GameObserver *observer) { observer_ = observer; }
 
 const SudokuBoard &SudokuGame::board() const { return board_; }
 
-PuzzleLoadStatus SudokuGame::loadPuzzle(const std::string &puzzleFileName) {
+PuzzleLoadStatus SudokuGame::loadPuzzle(std::string_view puzzleFileName) {
     const PuzzleLoadStatus status = board_.loadValidGrid(puzzleFileName);
 
     // The board only mutates on Accepted, so a rejected puzzle gets the outcome

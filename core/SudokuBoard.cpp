@@ -187,7 +187,7 @@ MoveStatus SudokuBoard::clearCell(const Position &p) {
     return setValue(p, Cell::EmptyValue);
 }
 
-PuzzleLoadStatus SudokuBoard::loadValidGrid(const std::string &puzzleFileName) {
+PuzzleLoadStatus SudokuBoard::loadValidGrid(std::string_view puzzleFileName) {
     // Validate everything before touching grid_, so a rejected puzzle leaves
     // the current game untouched.
     // Build the replacement separately, then hand it over in one step.

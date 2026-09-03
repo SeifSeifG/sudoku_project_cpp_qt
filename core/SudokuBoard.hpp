@@ -237,7 +237,7 @@ class SudokuBoard {
      * @post On any status other than Accepted the board is left unchanged, since
      *       every check runs before the first mutation.
      */
-    PuzzleLoadStatus loadValidGrid(const std::string &puzzleFileName);
+    PuzzleLoadStatus loadValidGrid(std::string_view puzzleFileName);
 
     /**
      * @brief Saves this board's grid to a file.

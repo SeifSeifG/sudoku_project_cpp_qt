@@ -17,6 +17,15 @@ class QPaintEvent;
 
 namespace sudoku {
 
+// Backgrounds
+inline const QColor kDefaultBg("#ffffff");
+inline const QColor kHighlightedBg("#dce9fc"); // same row/col/box
+inline const QColor kSelectedBg("#316ac5");
+
+// Text
+inline const QColor kGivenText("#000000");
+inline const QColor kPlayerText("#24a81a");
+
 /**
  * @brief A single interactive Sudoku cell in the Qt grid.
  *

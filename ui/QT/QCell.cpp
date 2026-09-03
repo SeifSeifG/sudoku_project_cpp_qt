@@ -7,21 +7,17 @@
 
 namespace sudoku {
 
-namespace {
-constexpr int CellPixelSize = 48;
-
 // Border colors/widths per the spec: hairline 1px #bbb everywhere, except every
 // 3rd row/column boundary and the outer edges, which are 2px #444. Because col 0
 // and col Position::BoardSize-1 both satisfy the "% BoxSize == 0" test below, the
 // outer-edge case falls out of the same formula as the box-boundary case -- no
 // separate special-casing is needed.
-const QColor kThinBorderColor("#bbbbbb");
-const QColor kThickBorderColor("#444444");
-const QColor kSelectedBg("#316ac5");
-const QColor kHighlightedBg("#dce9fc");
-const QColor kDefaultBg("#ffffff");
-const QColor kGivenText("#000000");
-const QColor kPlayerText("#1aa839");
+// Borders
+inline const QColor kThinBorderColor("#bbbbbb");  // hairline cell borders
+inline const QColor kThickBorderColor("#444444"); // 3x3 box / outer edges
+
+namespace {
+constexpr int CellPixelSize = 48;
 } // namespace
 
 QCell::QCell(int row, int col, QWidget *parent)
