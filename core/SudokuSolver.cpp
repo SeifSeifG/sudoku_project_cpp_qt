@@ -4,9 +4,9 @@ namespace sudoku {
 
 // ---- Private helpers ---------------------------------------------------
 
-CandidateSet SudokuSolver::countCandidates(SudokuBoard &board, const Position &p) {
+CandidateSet SudokuSolver::countCandidates(SudokuBoard &board, const Position &p, int cap) {
     CandidateSet candidates;
-    for (int digit = Cell::MinValue; digit <= Cell::MaxValue; ++digit) {
+    for (int digit = Cell::MinValue; digit <= Cell::MaxValue && candidates.count < cap; ++digit) {
         if (board.setValue(p, digit) == MoveStatus::Accepted) {
             candidates.digits[candidates.count++] = digit;
             board.clearCell(p);
@@ -17,6 +17,7 @@ CandidateSet SudokuSolver::countCandidates(SudokuBoard &board, const Position &p
 
 std::optional<ConstrainedCell> SudokuSolver::findMostConstrainedCell(SudokuBoard &board) {
     std::optional<ConstrainedCell> best;
+    constexpr int noCapYet = Cell::MaxValue - Cell::MinValue + 2; // unreachable -- "no limit yet"
 
     for (row_t row = 0; row < Position::BoardSize; ++row) {
         for (col_t col = 0; col < Position::BoardSize; ++col) {
@@ -25,9 +26,10 @@ std::optional<ConstrainedCell> SudokuSolver::findMostConstrainedCell(SudokuBoard
                 continue;
             }
 
-            CandidateSet candidates = countCandidates(board, p);
+            const int cap = best ? best->candidates.count : noCapYet;
+            CandidateSet candidates = countCandidates(board, p, cap);
             if (candidates.count == 0) {
-                return ConstrainedCell{p, candidates}; // dead cell -- report immediately
+                return ConstrainedCell{p, candidates};
             }
             if (!best || candidates.count < best->candidates.count) {
                 best = ConstrainedCell{p, candidates};

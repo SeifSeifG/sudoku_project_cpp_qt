@@ -80,12 +80,17 @@ class SudokuSolver {
     /**
      * @brief Evaluates which digits can be legally placed at a given position.
      *
+     * Stops probing once @p cap candidates have been found, since a count that
+     * has already reached the current best cannot change the comparison in
+     * findMostConstrainedCell() -- only the winning cell's set is ever computed
+     * in full.
+     *
      * @param board The current state of the Sudoku board.
      * @param p The position to check for candidate digits.
-     * @return A CandidateSet containing all valid digits and their total count.
+     * @param cap Stop counting once this many candidates have been found.
+     * @return A CandidateSet containing the candidates found before stopping.
      */
-    static CandidateSet countCandidates(SudokuBoard &board, const Position &p);
-
+    static CandidateSet countCandidates(SudokuBoard &board, const Position &p, int cap);
     /**
      * @brief Finds the empty cell with the fewest valid candidate digits.
      *

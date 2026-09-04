@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <array>
+#include <iostream>
 #include <numeric>
 #include <stdexcept>
 
@@ -11,15 +12,11 @@ namespace sudoku {
 std::optional<SudokuBoard> SudokuGenerator::generate(Difficulty difficulty) {
     // Generation is retried from scratch on failure rather than resumed,
     // since a stalled random start has no salvageable state to continue from.
-    for (int attempt = 0; attempt < maxGenerationAttempts; ++attempt) {
-        SudokuBoard board;
-        std::mt19937 rng(std::random_device{}());
+    SudokuBoard board;
+    std::mt19937 rng(std::random_device{}());
 
-        placeInitialTransversal(board, rng);
-        if (!growPuzzle(board, rng, static_cast<int>(difficulty))) {
-            continue; // this random start didn't converge -- try a fresh one
-        }
-
+    placeInitialTransversal(board, rng);
+    if (growPuzzle(board, rng, static_cast<int>(difficulty))) {
         // growPuzzle() only guarantees the *values* are correct; the clues
         // still need to be locked so the player can't edit them later.
         for (row_t row = 0; row < Position::BoardSize; ++row) {
@@ -47,10 +44,9 @@ void SudokuGenerator::placeInitialTransversal(SudokuBoard &board, std::mt19937 &
     std::iota(values.begin(), values.end(), Cell::MinValue);
 
     for (row_t row = 0; row < Position::BoardSize; ++row) {
-        Position p(row, cols[row]);
         std::shuffle(values.begin(), values.end(), rng);
         for (int value : values) {
-            if (board.setValue(p, value) == MoveStatus::Accepted) {
+            if (board.setValue(Position(row, cols[row]), value) == MoveStatus::Accepted) {
                 break;
             }
         }
@@ -60,12 +56,12 @@ void SudokuGenerator::placeInitialTransversal(SudokuBoard &board, std::mt19937 &
 bool SudokuGenerator::growPuzzle(SudokuBoard &board, std::mt19937 &rng, int targetGivens) {
     int placed = Position::BoardSize; // the initial transversal already filled 9 cells
     int stalled = 0;
-    constexpr int maxStall = 20; // bail-out guard against an unlucky run that never converges
+    constexpr int maxStall = 10; // bail-out guard against an unlucky run that never converges
 
     while (stalled < maxStall) {
         // Only check uniqueness once the puzzle is otherwise done, see the
         // note on the loop body below for why it isn't checked every cell.
-        if (placed >= targetGivens && solver_.countSolutions(board, 2) == 1) {
+        if (placed >= targetGivens && solver_.countSolutions(board) == 1) {
             return true; // target reached, and the puzzle has exactly one solution
         }
 
@@ -77,16 +73,16 @@ bool SudokuGenerator::growPuzzle(SudokuBoard &board, std::mt19937 &rng, int targ
         bool cellPlaced = false;
         for (int value : values) {
             if (board.setValue(p, value) != MoveStatus::Accepted) {
-                continue;
                 if (board.isComplete()) {
                     return true;
                 }
+                continue;
             }
             // Existence, not uniqueness: this early, almost every legal
             // board still has many completions, so demanding a single
             // solution here would reject nearly every placement. Uniqueness
             // is only checked once targetGivens is reached, above.
-            if (solver_.countSolutions(board, 1) > 0) {
+            if (solver_.countSolutions(board) > 0) {
                 cellPlaced = true;
                 break;
             }
