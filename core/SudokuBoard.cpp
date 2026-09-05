@@ -5,11 +5,9 @@ namespace sudoku {
 
 // ---- Construction ------------------------------------------------------
 
-SudokuBoard::SudokuBoard()
-    : grid_(Position::BoardSize, std::vector<Cell>(Position::BoardSize, Cell())) {
-    // Every Cell default-constructs to EmptyValue with given == false, so
-    // there is nothing further to do. The vector owns its memory and frees
-    // it in its own destructor -- this class needs none of its own.
+SudokuBoard::SudokuBoard() {
+    // grid_ default-constructs: every Cell() is already EmptyValue/unlocked,
+    // and an array of arrays owns no heap memory to set up or free.
 }
 
 // ---- Reading -----------------------------------------------------------
@@ -19,7 +17,7 @@ const Cell &SudokuBoard::at(const Position &p) const { return grid_[p.row()][p.c
 int SudokuBoard::valueAt(const Position &p) const { return at(p).value(); }
 
 bool SudokuBoard::isComplete() const {
-    for (const std::vector<Cell> &row : grid_) {
+    for (const auto &row : grid_) {
         for (const Cell &cell : row) {
             if (cell.isEmpty()) {
                 return false;
@@ -31,7 +29,7 @@ bool SudokuBoard::isComplete() const {
 
 int SudokuBoard::emptyCount() const {
     int count = 0;
-    for (const std::vector<Cell> &row : grid_) {
+    for (const auto &row : grid_) {
         for (const Cell &cell : row) {
             if (cell.isEmpty()) {
                 ++count;
@@ -41,19 +39,30 @@ int SudokuBoard::emptyCount() const {
     return count;
 }
 
-const std::vector<Cell> &SudokuBoard::getRow(const Position &pos) const { return grid_[pos.row()]; }
+const std::array<Cell, Position::BoardSize> &SudokuBoard::getRow(const Position &pos) const {
+    return grid_[pos.row()];
+}
 
-std::vector<Cell> SudokuBoard::getColumn(const Position &pos) const {
-    std::vector<Cell> column;
-    column.reserve(Position::BoardSize);
-
-    int c = pos.col();
-
+const std::array<Cell, Position::BoardSize> SudokuBoard::getColumn(const Position &pos) const {
+    std::array<Cell, Position::BoardSize> column{};
+    const int c = pos.col();
     for (int r = 0; r < Position::BoardSize; ++r) {
-        column.push_back(grid_[r][c]);
+        column[r] = grid_[r][c];
     }
-
     return column;
+}
+
+const std::array<Cell, Position::BoardSize> SudokuBoard::getBox(const Position &p) const {
+    std::array<Cell, Position::BoardSize> box{};
+    const auto &[firstRow, firstCol] = p.boxStart();
+
+    int i = 0;
+    for (row_t row = firstRow; row < firstRow + Position::BoxSize; ++row) {
+        for (col_t col = firstCol; col < firstCol + Position::BoxSize; ++col) {
+            box[i++] = grid_[row][col];
+        }
+    }
+    return box;
 }
 
 // ---- Rule checking -----------------------------------------------------
@@ -108,7 +117,8 @@ bool SudokuBoard::boxContains(const Position &p, int value) const {
 
 // ---- Puzzle setup ------------------------------------------------------
 
-bool SudokuBoard::gridIsSelfConsistent(const std::vector<std::vector<Cell>> &grid) {
+bool SudokuBoard::gridIsSelfConsistent(
+    const std::array<std::array<Cell, Position::BoardSize>, Position::BoardSize> &grid) {
     // Static, so it cannot use the member scans above: this runs before any
     // board holds the data. It walks each clue and looks for the same digit
     // elsewhere in the clue's row, column, and box.
@@ -191,8 +201,7 @@ PuzzleLoadStatus SudokuBoard::loadValidGrid(std::string_view puzzleFileName) {
     // Validate everything before touching grid_, so a rejected puzzle leaves
     // the current game untouched.
     // Build the replacement separately, then hand it over in one step.
-    std::vector<std::vector<Cell>> loaded(Position::BoardSize,
-                                          std::vector<Cell>(Position::BoardSize));
+    std::array<std::array<Cell, Position::BoardSize>, Position::BoardSize> loaded{};
     PuzzleLoadStatus loadStatus = Load::loadGrid(puzzleFileName, loaded);
 
     if (loadStatus != PuzzleLoadStatus::Accepted) {
@@ -215,7 +224,7 @@ bool SudokuBoard::saveGrid(const std::string &puzzleFileName) const {
 }
 
 void SudokuBoard::reset() {
-    for (std::vector<Cell> &row : grid_) {
+    for (auto &row : grid_) {
         for (Cell &cell : row) {
             cell = Cell();
         }
@@ -223,7 +232,7 @@ void SudokuBoard::reset() {
 }
 
 void SudokuBoard::clearPlayerEntries() {
-    for (std::vector<Cell> &row : grid_) {
+    for (auto &row : grid_) {
         for (Cell &cell : row) {
             if (cell.isEditable()) {
                 cell.setValue(Cell::EmptyValue);

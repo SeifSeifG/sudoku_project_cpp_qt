@@ -1,8 +1,8 @@
 #ifndef SUDOKU_CORE_SUDOKUBOARD_HPP
 #define SUDOKU_CORE_SUDOKUBOARD_HPP
 
+#include <array>
 #include <random>
-#include <vector>
 
 #include "core/Cell.hpp"
 #include "core/Load.hpp"
@@ -49,7 +49,7 @@ enum class MoveStatus {
  */
 class SudokuBoard {
   private:
-    std::vector<std::vector<Cell>>
+    std::array<std::array<Cell, Position::BoardSize>, Position::BoardSize>
         grid_; ///< Position::BoardSize rows of Position::BoardSize cells.
 
     /**
@@ -85,7 +85,8 @@ class SudokuBoard {
      * @param grid A 9x9 grid of digits, 0 for empty.
      * @return True when the clues are mutually consistent.
      */
-    static bool gridIsSelfConsistent(const std::vector<std::vector<Cell>> &grid);
+    static bool gridIsSelfConsistent(
+        const std::array<std::array<Cell, Position::BoardSize>, Position::BoardSize> &grid);
 
   public:
     /**
@@ -148,7 +149,7 @@ class SudokuBoard {
      * @return const std::vector<Cell>& A constant reference to the vector containing the row's
      * cells.
      */
-    const std::vector<Cell> &getRow(const Position &pos) const;
+    const std::array<Cell, Position::BoardSize> &getRow(const Position &pos) const;
 
     /**
      * @brief Retrieves the entire column of cells for a given board position.
@@ -160,9 +161,9 @@ class SudokuBoard {
      * @param pos The position whose column should be retrieved.
      * @return std::vector<Cell> A newly constructed vector containing copies of the column's cells.
      */
-    std::vector<Cell> getColumn(const Position &pos) const;
+    const std::array<Cell, Position::BoardSize> getColumn(const Position &pos) const;
 
-    std::vector<std::vector<Cell>> getBox(const Position &p) const;
+    const std::array<Cell, Position::BoardSize> getBox(const Position &p) const;
 
     /// @}
 

@@ -1,9 +1,9 @@
 #ifndef SUDOKU_CORE_SAVE_HPP
 #define SUDOKU_CORE_SAVE_HPP
 
+#include <array>
 #include <fstream>
 #include <string>
-#include <vector>
 
 #include "core/Cell.hpp"
 #include "core/Position.hpp"
@@ -29,8 +29,9 @@ class Save {
      *         without error; false if the file could not be opened or a
      *         write failure occurred partway through (e.g., disk full).
      */
-    static bool saveGrid(const std::string &puzzleFileName,
-                         const std::vector<std::vector<Cell>> &grid) {
+    static bool
+    saveGrid(const std::string &puzzleFileName,
+             const std::array<std::array<Cell, Position::BoardSize>, Position::BoardSize> &grid) {
 
         std::string formattedName = puzzleFileName;
 

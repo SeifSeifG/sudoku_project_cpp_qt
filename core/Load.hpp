@@ -3,10 +3,10 @@
 
 #include "core/Cell.hpp"
 #include "core/Position.hpp"
+#include <array>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <vector>
 
 namespace sudoku {
 
@@ -25,8 +25,9 @@ enum class PuzzleLoadStatus {
 class Load {
   public:
     // Pure function: Takes a filename, loads into grid, handles its own stream internally
-    static PuzzleLoadStatus loadGrid(std::string_view puzzleFileName,
-                                     std::vector<std::vector<Cell>> &grid) {
+    static PuzzleLoadStatus
+    loadGrid(std::string_view puzzleFileName,
+             std::array<std::array<Cell, Position::BoardSize>, Position::BoardSize> &grid) {
         std::ifstream file(puzzleFileName.data());
         if (!file.is_open()) {
             return PuzzleLoadStatus::FileNotFound;
